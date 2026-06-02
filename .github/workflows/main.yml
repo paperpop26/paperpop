@@ -1,0 +1,33 @@
+name: Windows EXE 빌드
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: Python 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 패키지 설치
+        run: pip install -r requirements.txt
+
+      - name: EXE 빌드
+        run: |
+          pyinstaller --onefile --windowed --name "페이퍼팝_송장자동화" --add-data "template;template" app.py
+
+      - name: EXE 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: 페이퍼팝_송장자동화_윈도우
+          path: dist/페이퍼팝_송장자동화.exe
+          retention-days: 30
